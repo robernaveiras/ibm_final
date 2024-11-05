@@ -96,7 +96,7 @@ inventario.mostrar_inventario()
 
 # Buscar un producto
 producto_encontrado = inventario.buscar_producto("Manzana")
-print(producto_encontrado.precio)
+
 
 # Actualizar un producto
 inventario.actualizar_producto("Leche", nueva_cantidad=8)
