@@ -1,7 +1,4 @@
-from urllib.parse import non_hierarchical
-
-
-Class Producto:
+class Producto:
     def __init__(self, nombre, categoria, precio, cantidad):
         self.nombre = nombre
         self.categoria = categoria
@@ -36,7 +33,7 @@ Class Producto:
 
     @property
     def cantidad(self):
-    return self.__cantidad
+        return self.__cantidad
 
     @cantidad.setter
     def cantidad(self, nueva_cantidad):
@@ -45,9 +42,9 @@ Class Producto:
         self.__cantidad = nueva_cantidad
 
 
-Class Inventario:
-    def__init__(self):
-        self.productos = []
+class Inventario:
+    def __init__(self):
+        self.productos= []
 
     def agregar_producto(self, producto):
         if producto in self.__productos:
