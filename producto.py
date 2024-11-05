@@ -1,9 +1,9 @@
 class Producto:
     def __init__(self, nombre, categoria, precio, cantidad):
-        self.nombre = nombre
-        self.categoria = categoria
-        self.precio = precio
-        self.cantidad = cantidad
+        self.__nombre = nombre
+        self.__categoria = categoria
+        self.__precio = precio
+        self.__cantidad = cantidad 
 
         #Validaciones
 
@@ -44,16 +44,16 @@ class Producto:
 
 class Inventario:
     def __init__(self):
-        self.productos= []
-
+        self.__productos= []
+    
     def agregar_producto(self, producto):
         if producto in self.__productos:
             raise ValueError("El producto ya existe en el inventario")
-        self.producto.append(producto)
+        self.__productos.append(producto)
 
     def actualizar_producto(self, nombre_producto, nuevo_precio=None, nueva_cantidad=None):
         for producto in self.__productos:
-            if producto.nonmbre == nombre_producto:
+            if producto.nombre == nombre_producto:
                 if nuevo_precio:
                     producto.precio = nuevo_precio
                 if nueva_cantidad:
@@ -70,6 +70,36 @@ class Inventario:
 
     def mostrar_inventario(self):
         for producto in self.__productos:
+            print(f"Nombre: {producto.nombre}, Categoria: {producto.categoria}, Precio: {producto.precio}, Cantidad: {producto.cantidad}")
+
+
+    def buscar_producto(self, nombre_producto):
+        for producto in self.__productos:
             if producto.nombre == nombre_producto:
                 return producto
         return None
+    
+
+# Crear productos
+producto1 = Producto("Manzana", "Frutas", 1.5, 10)
+producto2 = Producto("Leche", "Lacteos", 2.0, 5)
+
+# Crear inventario
+inventario = Inventario()
+
+# Agregar productos al inventario
+inventario.agregar_producto(producto1)
+inventario.agregar_producto(producto2)
+
+# Mostrar inventario
+inventario.mostrar_inventario()
+
+# Buscar un producto
+producto_encontrado = inventario.buscar_producto("Manzana")
+print(producto_encontrado.precio)
+
+# Actualizar un producto
+inventario.actualizar_producto("Leche", nueva_cantidad=8)
+
+# Eliminar un producto
+inventario.eliminar_producto("Manzana")
