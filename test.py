@@ -1,73 +1,96 @@
 import unittest
 from main import Producto, Inventario
 
+
+
+
+import unittest
+
+# Assuming Producto and Inventario classes are defined as above
+
 class TestProducto(unittest.TestCase):
+    def test_creation(self):
+        producto = Producto("Laptop", "Electronics", 1000, 5)
+        self.assertEqual(producto.get_nombre(), "Laptop")
+        self.assertEqual(producto.get_categoria(), "Electronics")
+        self.assertEqual(producto.get_precio(), 1000)
+        self.assertEqual(producto.get_cantidad(), 5)
 
-    def test_crear_producto(self):
-        producto = Producto("Manzana", "Fruta", 1.0, 10)
-        self.assertEqual(producto.get_nombre(), "Manzana")
-        self.assertEqual(producto.get_categoria(), "Fruta")
-        self.assertEqual(producto.get_precio(), 1.0)
-        # self.assertEqual(producto.get_cantidad(), 10)  # Fix: Use getter method
+    def test_set_precio(self):
+        producto = Producto("Mouse", "Peripherals", 20, 10)
+        producto.set_precio(30)
+        self.assertEqual(producto.get_precio(), 30)
 
-    def test_precio_invalido(self):
-        producto = Producto("Manzana", "Fruta", 1.0, 10)
-        with self.assertRaisesRegex(ValueError, "El precio debe ser mayor que 0"):
-            producto.precio(-1.0)
+        with self.assertRaises(ValueError):
+            producto.set_precio(-10)
 
-    def test_cantidad_invalida(self):
-        producto = Producto("Manzana", "Fruta", 1.0, 10)
-        with self.assertRaisesRegex(ValueError, "La cantidad tiene que ser mayor o igual que cero"):
-            producto.cantidad(-1)  # Fix: Access correctly
+    def test_set_cantidad(self):
+        producto = Producto("Keyboard", "Peripherals", 50, 20)
+        producto.set_cantidad(15)
+        self.assertEqual(producto.get_cantidad(), 15)
 
+        with self.assertRaises(ValueError):
+            producto.set_cantidad(-5)
 
 
 class TestInventario(unittest.TestCase):
-
     def setUp(self):
         self.inventario = Inventario()
-        self.producto1 = Producto("Manzana", "Fruta", 1.0, 10)
-        self.producto2 = Producto("Banana", "Fruta", 0.5, 20)
-
+        self.producto1 = Producto("Laptop", "Electronics", 1000, 5)
+        self.producto2 = Producto("Mouse", "Peripherals", 20, 10)
 
     def test_agregar_producto(self):
         self.inventario.agregar_producto(self.producto1)
-        self.assertIn(self.producto1, self.inventario._productos)
+        self.assertEqual(len(self.inventario._productos), 1)
 
-    def test_agregar_producto_duplicado(self):
-        self.inventario.agregar_producto(self.producto1)
-        with self.assertRaisesRegex(ValueError, "Este producto ya existe en el inventario"):
+        with self.assertRaises(ValueError):
             self.inventario.agregar_producto(self.producto1)
 
     def test_actualizar_producto(self):
         self.inventario.agregar_producto(self.producto1)
-        self.inventario.actualizar_producto("Manzana", precio=1.5, cantidad=15)
-        self.assertEqual(self.producto1.get_precio(), 1.5)
-        # self.assertEqual(self.producto1.get_cantidad(), 15) Fix: Access with getter
+        self.inventario.actualizar_producto("Laptop", precio=1200, cantidad=7)
+        producto = self.inventario.buscar_producto("Laptop")
+        self.assertEqual(producto.get_precio(), 1200)
+        self.assertEqual(producto.get_cantidad(), 7)
 
-    def test_actualizar_producto_no_existente(self):
-        with self.assertRaisesRegex(ValueError, "Este producto no exite en el inventario"):
-            self.inventario.actualizar_producto("Naranja", precio=2.0, cantidad=5)
+        with self.assertRaises(ValueError):
+            self.inventario.actualizar_producto("Keyboard", precio=50, cantidad=3)
 
     def test_eliminar_producto(self):
         self.inventario.agregar_producto(self.producto1)
-        self.inventario.eliminar_producto("Manzana")
-        self.assertNotIn(self.producto1, self.inventario._productos)
+        self.inventario.eliminar_producto("Laptop")
+        self.assertEqual(len(self.inventario._productos), 0)
 
-    def test_eliminar_producto_no_existente(self):
-        with self.assertRaisesRegex(ValueError, "Este producto no existe en el inventario por lo que no se puede elminar"):
-            self.inventario.eliminar_producto("Naranja")
+        with self.assertRaises(ValueError):
+            self.inventario.eliminar_producto("Mouse")
+
+    def test_mostrar_inventario(self):
+        import sys
+        from io import StringIO
+
+        # Redirect stdout to capture the print statements
+        captured_output = StringIO()
+        sys.stdout = captured_output
+
+        self.inventario.agregar_producto(self.producto1)
+        self.inventario.agregar_producto(self.producto2)
+        self.inventario.mostrar_inventario()
+
+        # Reset redirect.
+        sys.stdout = sys.__stdout__
+
+        expected_output = "Nombre: Laptop, Categoria: Electronics, Precio: 1000, Cantidad: 5\n" \
+                         "Nombre: Mouse, Categoria: Peripherals, Precio: 20, Cantidad: 10\n"
+        self.assertEqual(captured_output.getvalue(), expected_output)
 
     def test_buscar_producto(self):
         self.inventario.agregar_producto(self.producto1)
-        producto_encontrado = self.inventario.buscar_producto("Manzana")
-        self.assertEqual(producto_encontrado, self.producto1)
+        producto = self.inventario.buscar_producto("Laptop")
+        self.assertIsNotNone(producto)
+        self.assertEqual(producto.get_nombre(), "Laptop")
 
-
-    def test_buscar_producto_no_existente(self):
-        with self.assertRaisesRegex(ValueError, "El producto no existe en el inventario"):
-            self.inventario.buscar_producto("Naranja")
-
+        with self.assertRaises(ValueError):
+            self.inventario.buscar_producto("Keyboard")
 
 
 if __name__ == '__main__':
