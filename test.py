@@ -1,12 +1,7 @@
 import unittest
 from main import Producto, Inventario
-
-
-
-
-import unittest
-
 # Assuming Producto and Inventario classes are defined as above
+
 
 class TestProducto(unittest.TestCase):
     def test_creation(self):
@@ -79,8 +74,10 @@ class TestInventario(unittest.TestCase):
         # Reset redirect.
         sys.stdout = sys.__stdout__
 
-        expected_output = "Nombre: Laptop, Categoria: Electronics, Precio: 1000, Cantidad: 5\n" \
-                         "Nombre: Mouse, Categoria: Peripherals, Precio: 20, Cantidad: 10\n"
+        expected_output = (
+            "Nombre: Laptop, Categoria: Electronics, Precio: 1000, Cantidad: 5\n"
+            "Nombre: Mouse, Categoria: Peripherals, Precio: 20, Cantidad: 10\n"
+        )
         self.assertEqual(captured_output.getvalue(), expected_output)
 
     def test_buscar_producto(self):
@@ -93,5 +90,5 @@ class TestInventario(unittest.TestCase):
             self.inventario.buscar_producto("Keyboard")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
